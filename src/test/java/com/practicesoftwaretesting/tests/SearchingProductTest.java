@@ -1,0 +1,56 @@
+package com.practicesoftwaretesting.tests;
+
+import com.practicesoftwaretesting.pages.HomePage;
+import org.openqa.selenium.WebElement;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import utils.Core;
+
+import java.util.List;
+
+public class SearchingProductTest extends Core {
+
+    public String filterInput = "Thor Hammer";
+    public HomePage homePage;
+
+    @BeforeClass
+    public void setUp() {
+        driver = setDriver("chrome");
+        driver.get("https://practicesoftwaretesting.com/");
+        homePage = new HomePage(driver);
+    }
+
+    @Test
+    public void filteringProductsTest() {
+        homePage.enterProductInSearchField(filterInput);
+        homePage.clickSearchProductButton();
+        homePage.waitForTableToReload();
+        List<WebElement> productsList = homePage.getProductsList();
+        WebElement product = productsList.getFirst();
+        Assert.assertEquals(homePage.getProductName(product), filterInput);
+    }
+
+    @Test
+    public void enteringRandomTextInFilterTest() {
+        homePage.enterProductInSearchField("abc");
+        homePage.clickSearchProductButton();
+        homePage.waitForTableToReload();
+        List<WebElement> productsList = homePage.getProductsList();
+        Assert.assertEquals(productsList.size(), 0);
+    }
+
+    @Test
+    public void productNameIsDisplayedInSearchCaption() {
+        homePage.enterProductInSearchField(filterInput);
+        homePage.clickSearchProductButton();
+        homePage.waitForTableToReload();
+        Assert.assertEquals(homePage.getSearchCaptionText(), "Searched for: " + filterInput);
+    }
+
+    @AfterClass
+    public void tearDown() {
+        driver.quit();
+    }
+}
