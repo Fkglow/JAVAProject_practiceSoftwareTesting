@@ -1,9 +1,14 @@
 package com.practicesoftwaretesting.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class TopMenuBar {
 
@@ -17,6 +22,7 @@ public class TopMenuBar {
     private WebElement contactButton;
     @FindBy(css = "[data-test='nav-sign-in']")
     private WebElement signInButton;
+    private By cartButton = By.cssSelector("[data-test='nav-cart']");
     @FindBy(id = "language")
     private WebElement languageButton;
 
@@ -39,5 +45,10 @@ public class TopMenuBar {
 
     public void clickSignInButton() {
         signInButton.click();
+    }
+
+    public CartPage clickCartButton() {
+        new WebDriverWait(driver, Duration.ofSeconds(2)).until(ExpectedConditions.visibilityOfElementLocated(cartButton)).click();
+        return new CartPage(driver);
     }
 }

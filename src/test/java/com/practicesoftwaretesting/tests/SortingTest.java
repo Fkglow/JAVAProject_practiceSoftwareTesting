@@ -19,6 +19,7 @@ public class SortingTest extends Core {
     public void setUp() {
         driver = setDriver("chrome");
         driver.get("https://practicesoftwaretesting.com/");
+        driver.manage().window().maximize();
         homePage = new HomePage(driver);
     }
 

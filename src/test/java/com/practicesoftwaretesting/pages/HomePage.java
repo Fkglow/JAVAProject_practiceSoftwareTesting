@@ -55,6 +55,11 @@ public class HomePage {
         return productsList.findElements(product);
     }
 
+    public ProductPage goToProduct(WebElement product) {
+        product.click();
+        return new ProductPage(driver);
+    }
+
     public void waitForTableToReload() {
         try {
             Thread.sleep(1000);
