@@ -1,0 +1,25 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="PracticeSoftwareTesting" verbose="1" >
+
+    <test name="CartPageTest" preserve-order="true" enabled="true">
+        <classes>
+            <class name="com.practicesoftwaretesting.tests.CartPageTest"></class>
+        </classes>
+    </test>
+    <test name="ProductPageTest" preserve-order="true" enabled="true">
+        <classes>
+            <class name="com.practicesoftwaretesting.tests.ProductPageTest"></class>
+        </classes>
+    </test>
+    <test name="SearchingProductTest" preserve-order="true" enabled="true">
+        <classes>
+            <class name="com.practicesoftwaretesting.tests.SearchingProductTest"></class>
+        </classes>
+    </test>
+    <test name="SortingTest" preserve-order="true" enabled="true">
+        <classes>
+            <class name="com.practicesoftwaretesting.tests.SortingTest"></class>
+        </classes>
+    </test>
+
+</suite>

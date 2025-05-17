@@ -1,6 +1,7 @@
 package com.practicesoftwaretesting.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -11,7 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class CartPage {
+public class CartPage extends BasePage{
 
     private WebDriver driver;
 
@@ -28,9 +29,10 @@ public class CartPage {
     private By removeProductButton = By.cssSelector(".btn-danger");
 
     public CartPage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
         PageFactory.initElements(driver, this);
         new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.urlToBe("https://practicesoftwaretesting.com/checkout"));
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOf(productsTable));
     }
 
     public List<WebElement> getProductsRows() {
@@ -41,8 +43,11 @@ public class CartPage {
         return productRow.findElement(productName).getText();
     }
 
-    public void enterProductQuantity(WebElement productRow, String quantity) {
-        productRow.findElement(quantityInput).sendKeys(quantity);
+    public void enterProductQuantity(WebElement productRow, CharSequence quantity) {
+        WebElement input = productRow.findElement(quantityInput);
+        input.clear();
+        input.sendKeys(quantity);
+        input.sendKeys(Keys.TAB);
     }
 
     public double getProductPrice(WebElement productRow) {
@@ -63,6 +68,10 @@ public class CartPage {
     private double getDoubleFromPriceWithCurrencySting(String priceWithCurrency) {
         String priceNum = priceWithCurrency.substring(1);
         return Double.parseDouble(priceNum);
+    }
+
+    public void clickRemoveProductFromCart(WebElement productRow) {
+        productRow.findElement(removeProductButton).click();
     }
 
 }

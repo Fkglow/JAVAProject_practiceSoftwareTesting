@@ -22,6 +22,7 @@ public class TopMenuBar {
     private WebElement contactButton;
     @FindBy(css = "[data-test='nav-sign-in']")
     private WebElement signInButton;
+    private By cartQuantity = By.cssSelector("[data-test='cart-quantity']");
     private By cartButton = By.cssSelector("[data-test='nav-cart']");
     @FindBy(id = "language")
     private WebElement languageButton;
@@ -47,8 +48,16 @@ public class TopMenuBar {
         signInButton.click();
     }
 
+    public void waitForCartIconToAppear() {
+        new WebDriverWait(driver, Duration.ofSeconds(2)).until(ExpectedConditions.visibilityOfElementLocated(cartButton));
+    }
+
     public CartPage clickCartButton() {
-        new WebDriverWait(driver, Duration.ofSeconds(2)).until(ExpectedConditions.visibilityOfElementLocated(cartButton)).click();
+        driver.findElement(cartButton).click();
         return new CartPage(driver);
+    }
+
+    public String getCartQuantity() {
+        return driver.findElement(cartQuantity).getText();
     }
 }
