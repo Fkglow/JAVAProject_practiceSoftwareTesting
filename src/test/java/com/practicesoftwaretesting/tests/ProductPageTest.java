@@ -5,9 +5,7 @@ import com.practicesoftwaretesting.pages.ProductPage;
 import com.practicesoftwaretesting.pages.TopMenuBar;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import utils.Core;
 
 import java.util.List;
@@ -18,31 +16,36 @@ public class ProductPageTest extends Core {
     public TopMenuBar topMenuBar;
     public ProductPage productPage;
 
-    @BeforeClass
-    public void setUp() {
+    @BeforeMethod
+    public void setUp() throws InterruptedException {
         driver = setDriver("chrome");
         driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
         homePage = new HomePage(driver);
         topMenuBar = new TopMenuBar(driver);
+        Thread.sleep(3000);
     }
 
-    @Test(priority = 1)
-    public void productPropertiesTest() {
+    @Test
+    public void productPropertiesTest() throws InterruptedException {
         List<WebElement> productsList = homePage.getProductsList();
         WebElement product = productsList.getFirst();
         String productName = homePage.getProductName(product);
         double productPrice = homePage.getProductPrice(product);
         productPage = homePage.goToProduct(product);
-
+        Thread.sleep(3000);
         Assert.assertTrue(productPage.isPageDisplayed());
         Assert.assertEquals(productPage.getProductName(), productName);
         Assert.assertEquals(productPage.getProductPrice(), productPrice);
         Assert.assertFalse(productPage.getProductImageSrc().isEmpty());
     }
 
-    @Test(priority = 2)
-    public void productCanBeAddedToCartTest() {
+    @Test
+    public void productCanBeAddedToCartTest() throws InterruptedException {
+        List<WebElement> productsList = homePage.getProductsList();
+        WebElement product = productsList.getFirst();
+        productPage = homePage.goToProduct(product);
+        Thread.sleep(2000);
         productPage.clickAddToCartButton();
         Assert.assertTrue(productPage.isSuccessToastDisplayed());
         Assert.assertEquals(productPage.getSuccessToastMessage(), "Product added to shopping cart.");
@@ -51,17 +54,21 @@ public class ProductPageTest extends Core {
         Assert.assertEquals(topMenuBar.getCartQuantity(), "1");
     }
 
-    @Test(priority = 3)
+    @Test
     public void quantityOfProductCanBeUpdated() throws InterruptedException {
+        List<WebElement> productsList = homePage.getProductsList();
+        WebElement product = productsList.getFirst();
+        productPage = homePage.goToProduct(product);
+        Thread.sleep(2000);
         productPage.clickIncreaseQuantityButton();
         productPage.clickIncreaseQuantityButton();
         productPage.clickAddToCartButton();
         productPage.waitForToastToAppear();
         Thread.sleep(1000);
-        Assert.assertEquals(topMenuBar.getCartQuantity(), "4");
+        Assert.assertEquals(topMenuBar.getCartQuantity(), "3");
     }
 
-    @AfterClass
+    @AfterMethod
     public void tearDown() {
         driver.quit();
     }

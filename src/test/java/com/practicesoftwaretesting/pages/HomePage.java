@@ -25,6 +25,7 @@ public class HomePage {
     private WebElement searchField;
     @FindBy(css = "button[type='submit']")
     private WebElement searchButton;
+    private By categoryFilterCheckboxLabel = By.cssSelector(".checkbox label");
     // PRODUCTS
     @FindBy(css = ".col-md-9")
     private WebElement productsList;
@@ -37,6 +38,7 @@ public class HomePage {
     public HomePage(WebDriver driver) {
        this.driver = driver;
         PageFactory.initElements(driver, this);
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOf(productsList));
     }
 
     public void selectSortOptionByIndex(int index) {
@@ -49,6 +51,18 @@ public class HomePage {
 
     public void clickSearchProductButton() {
         searchButton.click();
+    }
+
+    public void selectCategoryCheckboxFilterByLabel(String labelText) {
+        List<WebElement> labels = driver.findElements(categoryFilterCheckboxLabel);
+        for (WebElement label : labels) {
+            if (label.getText().trim().equalsIgnoreCase(labelText.trim())) {
+                WebElement checkbox = label.findElement(By.tagName("input"));
+                checkbox.click();
+                return;
+            }
+        }
+        System.out.println("Label not found" + labelText);
     }
 
     public List<WebElement> getProductsList() {

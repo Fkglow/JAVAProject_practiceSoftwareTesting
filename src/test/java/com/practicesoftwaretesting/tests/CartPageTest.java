@@ -6,9 +6,7 @@ import com.practicesoftwaretesting.pages.ProductPage;
 import com.practicesoftwaretesting.pages.TopMenuBar;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import utils.Core;
 
 import java.util.List;
@@ -24,19 +22,17 @@ public class CartPageTest extends Core {
     public double PRODUCT_PRICE;
     public WebElement productRow;
 
-    @BeforeClass
-    public void setUp() {
+    @BeforeMethod
+    public void setUp() throws InterruptedException {
         driver = setDriver("chrome");
         driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
         homePage = new HomePage(driver);
         topMenuBar = new TopMenuBar(driver);
-    }
-
-    @Test(priority = 1)
-    public void addProductToCartTest() {
+        Thread.sleep(2000);
         WebElement product = homePage.getProductsList().getFirst();
         productPage = homePage.goToProduct(product);
+        Thread.sleep(2000);
 
         PRODUCT_NAME = productPage.getProductName();
         PRODUCT_PRICE = productPage.getProductPrice();
@@ -44,17 +40,24 @@ public class CartPageTest extends Core {
         productPage.clickAddToCartButton();
         topMenuBar.waitForCartIconToAppear();
         cartPage = topMenuBar.clickCartButton();
+    }
+
+    @Test
+    public void addProductToCartTest() {
         List<WebElement> productsList = cartPage.getProductsRows();
         productRow = productsList.getFirst();
 
         Assert.assertEquals(productsList.size(), 1);
         Assert.assertEquals(cartPage.getProductName(productRow).strip(), PRODUCT_NAME);
         Assert.assertEquals(cartPage.getProductPrice(productRow), PRODUCT_PRICE);
-        Assert.assertEquals(cartPage.getCartTotalPrice(), PRODUCT_PRICE);
+        Assert.assertEquals(cartPage.getCartTotalPrice(), "$"+PRODUCT_PRICE);
     }
 
-    @Test(priority = 2)
+    @Test
     public void productQuantityIncreaseTest() throws InterruptedException {
+        productPage.waitForToastToDisappear();
+        List<WebElement> productsList = cartPage.getProductsRows();
+        productRow = productsList.getFirst();
         int quantity = new Random().nextInt(10) + 1;
         double totalPrice = quantity * PRODUCT_PRICE;
         cartPage.enterProductQuantity(productRow, String.valueOf(quantity));
@@ -62,19 +65,23 @@ public class CartPageTest extends Core {
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
         Thread.sleep(2000);
         Assert.assertEquals(topMenuBar.getCartQuantity(), String.valueOf(quantity));
-        Assert.assertEquals(cartPage.getCartTotalPrice(), totalPrice);
+        double totalPriceValue = getDoublePriceFromPriceStringWithCurrency(cartPage.getCartTotalPrice());
+        Assert.assertEquals(totalPriceValue, totalPrice);
     }
 
-    @Test(priority = 3)
+    @Test
     public void deleteProductFromCartTest() throws InterruptedException {
+        productPage.waitForToastToDisappear();
+        List<WebElement> productsList = cartPage.getProductsRows();
+        productRow = productsList.getFirst();
         Thread.sleep(1000);
         cartPage.clickRemoveProductFromCart(productRow);
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
         Assert.assertEquals(cartPage.getSuccessToastMessage(), "Product deleted.");
-        Assert.assertEquals(cartPage.getCartTotalPrice(), "0.00");
+        Assert.assertEquals(cartPage.getCartTotalPrice(), "$0.00");
     }
 
-    @AfterClass
+    @AfterMethod
     public void tearDown() {
         driver.quit();
     }

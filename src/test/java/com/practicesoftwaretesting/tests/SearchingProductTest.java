@@ -7,13 +7,14 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import utils.Core;
+import utils.TestDataGenerator;
 
 import java.util.List;
 
 public class SearchingProductTest extends Core {
 
-    public String filterInput = "Thor Hammer";
     public HomePage homePage;
+    public TestDataGenerator dataGenerator;
 
     @BeforeClass
     public void setUp() {
@@ -24,18 +25,20 @@ public class SearchingProductTest extends Core {
     }
 
     @Test
-    public void filteringProductsTest() {
-        homePage.enterProductInSearchField(filterInput);
+    public void searchingProductsTest() {
+        String searchInput = dataGenerator.getRandomProductName();
+        homePage.enterProductInSearchField(searchInput);
         homePage.clickSearchProductButton();
         homePage.waitForTableToReload();
         List<WebElement> productsList = homePage.getProductsList();
         WebElement product = productsList.getFirst();
-        Assert.assertEquals(homePage.getProductName(product), filterInput);
+        Assert.assertEquals(homePage.getProductName(product), searchInput);
     }
 
     @Test
     public void enteringRandomTextInFilterTest() {
-        homePage.enterProductInSearchField("abc");
+        dataGenerator = new TestDataGenerator();
+        homePage.enterProductInSearchField(dataGenerator.generateRandomString());
         homePage.clickSearchProductButton();
         homePage.waitForTableToReload();
         List<WebElement> productsList = homePage.getProductsList();
@@ -44,10 +47,11 @@ public class SearchingProductTest extends Core {
 
     @Test
     public void productNameIsDisplayedInSearchCaption() {
-        homePage.enterProductInSearchField(filterInput);
+        String searchInput = dataGenerator.getRandomProductName();
+        homePage.enterProductInSearchField(searchInput);
         homePage.clickSearchProductButton();
         homePage.waitForTableToReload();
-        Assert.assertEquals(homePage.getSearchCaptionText(), "Searched for: " + filterInput);
+        Assert.assertEquals(homePage.getSearchCaptionText(), "Searched for: " + searchInput);
     }
 
     @AfterClass

@@ -23,4 +23,9 @@ public class Core {
         return driver;
     }
 
+    public double getDoublePriceFromPriceStringWithCurrency(String price) {
+        String priceWithoutCurrency = price.substring(1);
+        return Double.parseDouble(priceWithoutCurrency);
+    }
+
 }

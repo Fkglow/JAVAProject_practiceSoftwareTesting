@@ -52,20 +52,19 @@ public class CartPage extends BasePage{
 
     public double getProductPrice(WebElement productRow) {
         String priceStr = productRow.findElement(productPrice).getText();
-        return getDoubleFromPriceWithCurrencySting(priceStr);
+        return getDoubleFromPriceWithCurrencyString(priceStr);
     }
 
     public double getProductRowTotalPrice(WebElement productRow) {
         String priceStr = productRow.findElement(productRowTotalPrice).getText();
-        return getDoubleFromPriceWithCurrencySting(priceStr);
+        return getDoubleFromPriceWithCurrencyString(priceStr);
     }
 
-    public double getCartTotalPrice() {
-        String total = cartTotalPrice.getText();
-        return getDoubleFromPriceWithCurrencySting(total);
+    public String getCartTotalPrice() {
+        return cartTotalPrice.getText();
     }
 
-    private double getDoubleFromPriceWithCurrencySting(String priceWithCurrency) {
+    private double getDoubleFromPriceWithCurrencyString(String priceWithCurrency) {
         String priceNum = priceWithCurrency.substring(1);
         return Double.parseDouble(priceNum);
     }

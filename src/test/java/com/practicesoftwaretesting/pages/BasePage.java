@@ -17,12 +17,12 @@ public class BasePage {
         this.driver = driver;
     }
 
-    public void waitForToastToAppear() {
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(successToastMessage));
+    public void waitForToastToDisappear() {
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.invisibilityOfElementLocated(successToastMessage));
     }
 
-    public void waitForToastToDisappear() {
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.invisibilityOfElementLocated(successToastMessage));
+    public void waitForToastToAppear() {
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(successToastMessage));
     }
 
     public boolean isSuccessToastDisplayed() {

@@ -44,8 +44,9 @@ public class TopMenuBar {
         contactButton.click();
     }
 
-    public void clickSignInButton() {
+    public LoginPage clickSignInButton() {
         signInButton.click();
+        return new LoginPage(driver);
     }
 
     public void waitForCartIconToAppear() {
