@@ -1,7 +1,6 @@
 package com.practicesoftwaretesting.tests;
 
 import com.practicesoftwaretesting.pages.HomePage;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -27,9 +26,8 @@ public class SortingTest extends Core {
     public void sortProductsByNameAscendingTest() {
         homePage.selectSortOptionByIndex(1);
         homePage.waitForTableToReload();
-        List<WebElement> products = homePage.getProductsList();
 
-        List<String> productsNames = homePage.getProductsNamesFromTheList(products);
+        List<String> productsNames = homePage.getAllProductsNames();
         List<String> sortedProductsNames = productsNames.stream().sorted().toList();
         Assert.assertEquals(productsNames, sortedProductsNames);
     }
@@ -38,9 +36,8 @@ public class SortingTest extends Core {
     public void sortProductsByNameDescendingTest() {
         homePage.selectSortOptionByIndex(2);
         homePage.waitForTableToReload();
-        List<WebElement> products = homePage.getProductsList();
 
-        List<String> productsNames = homePage.getProductsNamesFromTheList(products);
+        List<String> productsNames = homePage.getAllProductsNames();
         List<String> sortedProductsNames = productsNames.stream().sorted(Comparator.reverseOrder()).toList();
         Assert.assertEquals(productsNames, sortedProductsNames);
         System.out.println(productsNames);
@@ -51,9 +48,8 @@ public class SortingTest extends Core {
     public void sortProductsByPriceHighToLowTest() {
         homePage.selectSortOptionByIndex(3);
         homePage.waitForTableToReload();
-        List<WebElement> products = homePage.getProductsList();
 
-        List<Double> productsPrices = homePage.getProductsPricesFromTheList(products);
+        List<Double> productsPrices = homePage.getAllProductsPrices();
         List<Double> sortedProductsPrices = productsPrices.stream().sorted(Comparator.reverseOrder()).toList();
         Assert.assertEquals(productsPrices, sortedProductsPrices);
     }
@@ -62,9 +58,8 @@ public class SortingTest extends Core {
     public void sortProductsByPriceLowToHighTest() {
         homePage.selectSortOptionByIndex(4);
         homePage.waitForTableToReload();
-        List<WebElement> products = homePage.getProductsList();
 
-        List<Double> productsPrices = homePage.getProductsPricesFromTheList(products);
+        List<Double> productsPrices = homePage.getAllProductsPrices();
         List<Double> sortedProductsPrices = productsPrices.stream().sorted().toList();
         Assert.assertEquals(productsPrices, sortedProductsPrices);
     }

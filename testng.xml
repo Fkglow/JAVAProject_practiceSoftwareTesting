@@ -16,11 +16,11 @@
             <class name="com.practicesoftwaretesting.tests.FilterProductsByCategoryTest"></class>
         </classes>
     </test>
-<!--    <test name="Cart Page Test" preserve-order="true" enabled="true">-->
-<!--        <classes>-->
-<!--            <class name="com.practicesoftwaretesting.tests.CartPageTest"></class>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="Cart Page Test" preserve-order="true" enabled="true">
+        <classes>
+            <class name="com.practicesoftwaretesting.tests.CartPageTest"></class>
+        </classes>
+    </test>
     <test name="Product Page Test" preserve-order="true" enabled="true">
         <classes>
             <class name="com.practicesoftwaretesting.tests.ProductPageTest"></class>
@@ -29,6 +29,11 @@
     <test name="Registration Form Validations Test" preserve-order="true" enabled="true">
         <classes>
             <class name="com.practicesoftwaretesting.tests.RegistrationFormValidationsTest"></class>
+        </classes>
+    </test>
+    <test name="Price Range Test" preserve-order="true" enabled="true">
+        <classes>
+            <class name="com.practicesoftwaretesting.tests.PriceRangeTest"></class>
         </classes>
     </test>
 </suite>

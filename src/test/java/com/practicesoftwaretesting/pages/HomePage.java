@@ -1,8 +1,10 @@
 package com.practicesoftwaretesting.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -10,39 +12,67 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomePage {
 
     private WebDriver driver;
+    private Actions move;
 
     // SIDE BAR
     @FindBy(css = ".form-select")
     private WebElement sortSelect;
+    @FindBy(css = ".ngx-slider-pointer-min")
+    private WebElement priceRangeSliderMinPointer;
+    @FindBy(css = ".ngx-slider-model-value")
+    private WebElement priceRangeMinValue;
     @FindBy(css = ".ngx-slider-pointer-max")
     private WebElement priceRangeSliderMaxPointer;
+    @FindBy(css = ".ngx-slider-model-high")
+    private WebElement priceRangeMaxValue;
     @FindBy(id = "search-query")
     private WebElement searchField;
     @FindBy(css = "button[type='submit']")
     private WebElement searchButton;
     private By categoryFilterCheckboxLabel = By.cssSelector(".checkbox label");
     // PRODUCTS
-    @FindBy(css = ".col-md-9")
-    private WebElement productsList;
+    @FindBy(css = "div .container")
+    private WebElement productsListContainer;
+    private By productsListLocator = By.cssSelector(".col-md-9");
     private By product = By.cssSelector(".card");
     private By productName = By.cssSelector(".card-title");
     private By productPrice = By.cssSelector("[data-test='product-price']");
     @FindBy(css = "[data-test='search-caption']")
     private WebElement searchCaption;
+    private By paginationList = By.cssSelector(".pagination");
 
     public HomePage(WebDriver driver) {
        this.driver = driver;
+        this.move = new Actions(driver);
         PageFactory.initElements(driver, this);
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOf(productsList));
     }
 
     public void selectSortOptionByIndex(int index) {
         new Select(sortSelect).selectByIndex(index);
+    }
+
+    public void changeMinPrice() {
+        move.clickAndHold(priceRangeSliderMinPointer).moveByOffset(70, 0).release().perform();
+    }
+
+    public int getMinPriceFromPriceRange() {
+        String price = priceRangeMinValue.getText();
+        return Integer.parseInt(price);
+    }
+
+    public void changeMaxPrice() {
+        move.clickAndHold(priceRangeSliderMaxPointer).moveByOffset(-50, 0).release().perform();
+    }
+
+    public int getMaxPriceFromPriceRange() {
+        String price = priceRangeMaxValue.getText();
+        return Integer.parseInt(price);
     }
 
     public void enterProductInSearchField(String productName) {
@@ -66,6 +96,7 @@ public class HomePage {
     }
 
     public List<WebElement> getProductsList() {
+        WebElement productsList = driver.findElement(productsListLocator);
         return productsList.findElements(product);
     }
 
@@ -82,6 +113,25 @@ public class HomePage {
         }
     }
 
+    public boolean isPaginationDisplayed() {
+        try {
+            WebElement pagination = driver.findElement(paginationList);
+            return pagination.isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public List<WebElement> getPagesButtons() {
+        WebElement pagination = driver.findElement(paginationList);
+        List<WebElement> list = pagination.findElements(By.cssSelector("li a"));
+        // Deleting previous and next page buttons
+        list.removeFirst();
+        list.removeLast();
+
+        return list;
+    }
+
     public List<String> getProductsNamesFromTheList(List<WebElement> products) {
         return products.stream().map(this::getProductName).toList();
     }
@@ -94,11 +144,43 @@ public class HomePage {
         return product.findElement(productName).getText();
     }
 
+    public List<String> getAllProductsNames() {
+        if (isPaginationDisplayed()) {
+            List<WebElement> totalPages = getPagesButtons();
+            List<String> allNames = new ArrayList<>();
+            for (int i = 1; i <= totalPages.size()-1; i++) {
+                totalPages.get(i).click();
+                waitForTableToReload();
+                List<WebElement> productsOnPage = getProductsList();
+                allNames.addAll(getProductsNamesFromTheList(productsOnPage));
+            }
+            return allNames;
+        } else {
+            return getProductsNamesFromTheList(getProductsList());
+        }
+    }
+
     public double getProductPrice(WebElement product) {
         String priceStr = product.findElement(productPrice).getText();
         // Delete currency symbol
         String priceNum = priceStr.substring(1);
         return Double.parseDouble(priceNum);
+    }
+
+    public List<Double> getAllProductsPrices() {
+        if (isPaginationDisplayed()) {
+            List<WebElement> totalPages = getPagesButtons();
+            List<Double> allPrices = new ArrayList<>();
+            for (int i = 1; i <= totalPages.size()-1; i++) {
+                totalPages.get(i).click();
+                waitForTableToReload();
+                List<WebElement> productsOnPage = getProductsList();
+                allPrices.addAll(getProductsPricesFromTheList(productsOnPage));
+            }
+            return allPrices;
+        } else {
+            return getProductsPricesFromTheList(getProductsList());
+        }
     }
 
     public String getSearchCaptionText() {
