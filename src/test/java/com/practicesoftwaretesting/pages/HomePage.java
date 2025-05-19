@@ -17,8 +17,8 @@ import java.util.List;
 
 public class HomePage {
 
-    private WebDriver driver;
-    private Actions move;
+    private final WebDriver driver;
+    private final Actions move;
 
     // SIDE BAR
     @FindBy(css = ".form-select")
@@ -48,7 +48,7 @@ public class HomePage {
     private By paginationList = By.cssSelector(".pagination");
 
     public HomePage(WebDriver driver) {
-       this.driver = driver;
+        this.driver = driver;
         this.move = new Actions(driver);
         PageFactory.initElements(driver, this);
         new WebDriverWait(driver, Duration.ofSeconds(5))

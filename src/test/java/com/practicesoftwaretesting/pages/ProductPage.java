@@ -11,8 +11,6 @@ import java.time.Duration;
 
 public class ProductPage extends BasePage{
 
-    private WebDriver driver;
-
     @FindBy(css = ".figure-img")
     private WebElement image;
     @FindBy(css = "[data-test='product-name']")

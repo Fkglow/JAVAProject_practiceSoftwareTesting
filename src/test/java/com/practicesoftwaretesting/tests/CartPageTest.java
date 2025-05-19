@@ -24,7 +24,7 @@ public class CartPageTest extends Core {
     public WebElement productRow;
 
     @BeforeMethod
-    public void setUp() throws InterruptedException {
+    public void setUp() {
         driver = setDriver("chrome");
         driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();

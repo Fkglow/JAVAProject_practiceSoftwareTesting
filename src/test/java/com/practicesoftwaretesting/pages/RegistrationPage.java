@@ -16,26 +16,6 @@ import java.util.List;
 public class RegistrationPage {
 
     public WebDriver driver;
-    @FindBy(id = "first_name")
-    private WebElement firstNameInput;
-    @FindBy(id = "last_name")
-    private WebElement lastNameInput;
-    @FindBy(id = "dob")
-    private WebElement dateOfBirthInput;
-    @FindBy(id = "street")
-    private WebElement streetInput;
-    @FindBy(id = "postal_code")
-    private WebElement postalCodeInput;
-    @FindBy(id = "city")
-    private WebElement cityInput;
-    @FindBy(id = "state")
-    private WebElement stateInput;
-    @FindBy(id = "country")
-    private Select countrySelect;
-    @FindBy(id = "phone")
-    private WebElement phoneNrInput;
-    @FindBy(id = "email")
-    private WebElement emailInput;
     @FindBy(id = "password")
     private WebElement passwordInput;
     @FindBy(css = "[data-test='register-submit']")
@@ -50,46 +30,6 @@ public class RegistrationPage {
         new WebDriverWait(driver, Duration.ofSeconds(5))
                 .until(ExpectedConditions.urlToBe("https://practicesoftwaretesting.com/auth/register"));
         PageFactory.initElements(driver, this);
-    }
-
-    public void enterFirstName(String fName) {
-        firstNameInput.sendKeys(fName);
-    }
-
-    public void enterLastName(String lName) {
-        lastNameInput.sendKeys(lName);
-    }
-
-    public void enterDOB(String dob) {
-        dateOfBirthInput.sendKeys(dob);
-    }
-
-    public void enterStreet(String street) {
-        streetInput.sendKeys(street);
-    }
-
-    public void enterPostalCode(String pCode) {
-        postalCodeInput.sendKeys(pCode);
-    }
-
-    public void enterCity(String city) {
-        cityInput.sendKeys(city);
-    }
-
-    public void enterState(String state) {
-        stateInput.sendKeys(state);
-    }
-
-    public void selectCountryByVisibleText(String country) {
-        countrySelect.selectByVisibleText(country);
-    }
-
-    public void enterPhoneNumber(String number) {
-        phoneNrInput.sendKeys(number);
-    }
-
-    public void enterEmail(String email) {
-        emailInput.sendKeys(email);
     }
 
     public void enterPassword(String pass) {

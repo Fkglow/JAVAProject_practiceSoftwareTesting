@@ -59,7 +59,6 @@ public class FilterProductsByCategoryTest extends Core {
         }
     }
 
-
     @AfterClass
     public void tearDown() {
         driver.quit();
