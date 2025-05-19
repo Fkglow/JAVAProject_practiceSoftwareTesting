@@ -25,7 +25,7 @@ public class SortingTest extends Core {
     @Test
     public void sortProductsByNameAscendingTest() {
         homePage.selectSortOptionByIndex(1);
-        homePage.waitForTableToReload();
+        homePage.waitForSortingToComplete();
 
         List<String> productsNames = homePage.getAllProductsNames();
         List<String> sortedProductsNames = productsNames.stream().sorted().toList();
@@ -35,7 +35,7 @@ public class SortingTest extends Core {
     @Test
     public void sortProductsByNameDescendingTest() {
         homePage.selectSortOptionByIndex(2);
-        homePage.waitForTableToReload();
+        homePage.waitForSortingToComplete();
 
         List<String> productsNames = homePage.getAllProductsNames();
         List<String> sortedProductsNames = productsNames.stream().sorted(Comparator.reverseOrder()).toList();
@@ -47,7 +47,7 @@ public class SortingTest extends Core {
     @Test
     public void sortProductsByPriceHighToLowTest() {
         homePage.selectSortOptionByIndex(3);
-        homePage.waitForTableToReload();
+        homePage.waitForSortingToComplete();
 
         List<Double> productsPrices = homePage.getAllProductsPrices();
         List<Double> sortedProductsPrices = productsPrices.stream().sorted(Comparator.reverseOrder()).toList();
@@ -57,7 +57,7 @@ public class SortingTest extends Core {
     @Test
     public void sortProductsByPriceLowToHighTest() {
         homePage.selectSortOptionByIndex(4);
-        homePage.waitForTableToReload();
+        homePage.waitForSortingToComplete();
 
         List<Double> productsPrices = homePage.getAllProductsPrices();
         List<Double> sortedProductsPrices = productsPrices.stream().sorted().toList();

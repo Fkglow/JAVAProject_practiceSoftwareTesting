@@ -29,7 +29,7 @@ public class SearchingProductTest extends Core {
         String searchInput = dataGenerator.getRandomProductName();
         homePage.enterProductInSearchField(searchInput);
         homePage.clickSearchProductButton();
-        homePage.waitForTableToReload();
+        homePage.waitForSearchingProductToComplete();
         List<WebElement> productsList = homePage.getProductsList();
         WebElement product = productsList.getFirst();
         Assert.assertEquals(homePage.getProductName(product), searchInput);
@@ -40,7 +40,7 @@ public class SearchingProductTest extends Core {
         dataGenerator = new TestDataGenerator();
         homePage.enterProductInSearchField(dataGenerator.generateRandomString());
         homePage.clickSearchProductButton();
-        homePage.waitForTableToReload();
+        homePage.waitForSearchingProductToComplete();
         List<WebElement> productsList = homePage.getProductsList();
         Assert.assertEquals(productsList.size(), 0);
     }
@@ -50,7 +50,7 @@ public class SearchingProductTest extends Core {
         String searchInput = dataGenerator.getRandomProductName();
         homePage.enterProductInSearchField(searchInput);
         homePage.clickSearchProductButton();
-        homePage.waitForTableToReload();
+        homePage.waitForSearchingProductToComplete();
         Assert.assertEquals(homePage.getSearchCaptionText(), "Searched for: " + searchInput);
     }
 

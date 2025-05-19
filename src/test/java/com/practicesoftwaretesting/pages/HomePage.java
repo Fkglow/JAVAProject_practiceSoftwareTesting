@@ -51,6 +51,8 @@ public class HomePage {
        this.driver = driver;
         this.move = new Actions(driver);
         PageFactory.initElements(driver, this);
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOf(productsListContainer));
     }
 
     public void selectSortOptionByIndex(int index) {
@@ -101,35 +103,32 @@ public class HomePage {
     }
 
     public ProductPage goToProduct(WebElement product) {
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(product));
         product.click();
         return new ProductPage(driver);
     }
 
     public void waitForTableToReload() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean isPaginationDisplayed() {
-        try {
-            WebElement pagination = driver.findElement(paginationList);
-            return pagination.isDisplayed();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
+    public void waitForSortingToComplete() {
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.attributeContains(productsListContainer, "data-test", "sorting_completed"));
     }
 
-    public List<WebElement> getPagesButtons() {
-        WebElement pagination = driver.findElement(paginationList);
-        List<WebElement> list = pagination.findElements(By.cssSelector("li a"));
-        // Deleting previous and next page buttons
-        list.removeFirst();
-        list.removeLast();
+    public void waitForSearchingProductToComplete() {
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.attributeContains(productsListContainer, "data-test", "search_completed"));
+    }
 
-        return list;
+    public void waitForFilteringToComplete() {
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.attributeContains(productsListContainer, "data-test", "filter_completed"));
     }
 
     public List<String> getProductsNamesFromTheList(List<WebElement> products) {
@@ -185,6 +184,25 @@ public class HomePage {
 
     public String getSearchCaptionText() {
         return new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOf(searchCaption)).getText();
+    }
+
+    private boolean isPaginationDisplayed() {
+        try {
+            WebElement pagination = driver.findElement(paginationList);
+            return pagination.isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    private List<WebElement> getPagesButtons() {
+        org.openqa.selenium.WebElement pagination = driver.findElement(paginationList);
+        List<org.openqa.selenium.WebElement> list = pagination.findElements(By.cssSelector("li a"));
+        // Deleting previous and next page buttons
+        list.removeFirst();
+        list.removeLast();
+
+        return list;
     }
 
 }

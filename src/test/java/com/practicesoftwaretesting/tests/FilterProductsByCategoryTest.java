@@ -38,7 +38,7 @@ public class FilterProductsByCategoryTest extends Core {
             String[] record;
             while ( (record = csvReader.readNext()) != null ) {
                 homePage.selectCategoryCheckboxFilterByLabel(record[0]);
-                homePage.waitForTableToReload();
+                homePage.waitForFilteringToComplete();
                 List<WebElement> productsList = homePage.getProductsList();
                 List<String> productsLabelsList = homePage.getProductsNamesFromTheList(productsList);
                 List<String> expectedProducts = Arrays.asList(record[1].split(","));

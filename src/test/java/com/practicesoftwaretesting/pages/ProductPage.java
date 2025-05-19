@@ -26,8 +26,11 @@ public class ProductPage extends BasePage{
 
     public ProductPage(WebDriver driver) {
         super(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.urlContains("https://practicesoftwaretesting.com/product/"));
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.urlContains("https://practicesoftwaretesting.com/product/"));
         PageFactory.initElements(driver, this);
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOf(image));
     }
 
     public boolean isPageDisplayed() {

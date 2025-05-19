@@ -17,23 +17,21 @@ public class ProductPageTest extends Core {
     public ProductPage productPage;
 
     @BeforeMethod
-    public void setUp() throws InterruptedException {
+    public void setUp() {
         driver = setDriver("chrome");
         driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
         homePage = new HomePage(driver);
         topMenuBar = new TopMenuBar(driver);
-        Thread.sleep(3000);
     }
 
     @Test
-    public void productPropertiesTest() throws InterruptedException {
+    public void productPropertiesTest() {
         List<WebElement> productsList = homePage.getProductsList();
         WebElement product = productsList.getFirst();
         String productName = homePage.getProductName(product);
         double productPrice = homePage.getProductPrice(product);
         productPage = homePage.goToProduct(product);
-        Thread.sleep(3000);
         Assert.assertTrue(productPage.isPageDisplayed());
         Assert.assertEquals(productPage.getProductName(), productName);
         Assert.assertEquals(productPage.getProductPrice(), productPrice);
@@ -41,11 +39,10 @@ public class ProductPageTest extends Core {
     }
 
     @Test
-    public void productCanBeAddedToCartTest() throws InterruptedException {
+    public void productCanBeAddedToCartTest() {
         List<WebElement> productsList = homePage.getProductsList();
         WebElement product = productsList.getFirst();
         productPage = homePage.goToProduct(product);
-        Thread.sleep(2000);
         productPage.clickAddToCartButton();
         Assert.assertTrue(productPage.isSuccessToastDisplayed());
         Assert.assertEquals(productPage.getSuccessToastMessage(), "Product added to shopping cart.");
@@ -55,16 +52,14 @@ public class ProductPageTest extends Core {
     }
 
     @Test
-    public void quantityOfProductCanBeUpdated() throws InterruptedException {
+    public void quantityOfProductCanBeUpdated() {
         List<WebElement> productsList = homePage.getProductsList();
         WebElement product = productsList.getFirst();
         productPage = homePage.goToProduct(product);
-        Thread.sleep(2000);
         productPage.clickIncreaseQuantityButton();
         productPage.clickIncreaseQuantityButton();
         productPage.clickAddToCartButton();
         productPage.waitForToastToAppear();
-        Thread.sleep(1000);
         Assert.assertEquals(topMenuBar.getCartQuantity(), "3");
     }
 

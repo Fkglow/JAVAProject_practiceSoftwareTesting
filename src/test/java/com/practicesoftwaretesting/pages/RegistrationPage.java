@@ -47,7 +47,8 @@ public class RegistrationPage {
 
     public RegistrationPage(WebDriver driver) {
         this.driver = driver;
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.urlToBe("https://practicesoftwaretesting.com/auth/register"));
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.urlToBe("https://practicesoftwaretesting.com/auth/register"));
         PageFactory.initElements(driver, this);
     }
 
@@ -101,7 +102,8 @@ public class RegistrationPage {
     }
 
     public List<WebElement> getValidationErrors() {
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(error));
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOfElementLocated(error));
         return driver.findElements(error);
     }
 

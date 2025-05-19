@@ -10,6 +10,7 @@ import org.testng.annotations.*;
 import utils.Core;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class CartPageTest extends Core {
@@ -29,10 +30,8 @@ public class CartPageTest extends Core {
         driver.manage().window().maximize();
         homePage = new HomePage(driver);
         topMenuBar = new TopMenuBar(driver);
-        Thread.sleep(2000);
         WebElement product = homePage.getProductsList().getFirst();
         productPage = homePage.goToProduct(product);
-        Thread.sleep(2000);
 
         PRODUCT_NAME = productPage.getProductName();
         PRODUCT_PRICE = productPage.getProductPrice();
@@ -54,7 +53,7 @@ public class CartPageTest extends Core {
     }
 
     @Test
-    public void productQuantityIncreaseTest() throws InterruptedException {
+    public void productQuantityIncreaseTest() {
         productPage.waitForToastToDisappear();
         List<WebElement> productsList = cartPage.getProductsRows();
         productRow = productsList.getFirst();
@@ -62,20 +61,21 @@ public class CartPageTest extends Core {
         double totalPrice = quantity * PRODUCT_PRICE;
         cartPage.enterProductQuantity(productRow, String.valueOf(quantity));
 
+        cartPage.waitForToastToAppear();
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
-        Thread.sleep(2000);
         Assert.assertEquals(topMenuBar.getCartQuantity(), String.valueOf(quantity));
-        double totalPriceValue = getDoublePriceFromPriceStringWithCurrency(cartPage.getCartTotalPrice());
-        Assert.assertEquals(totalPriceValue, totalPrice);
+        String totalPriceValue = cartPage.getCartTotalPrice();
+        String expectedTotalPrice = String.format(Locale.US,"%.2f", totalPrice);
+        Assert.assertEquals(totalPriceValue, "$"+expectedTotalPrice);
     }
 
     @Test
-    public void deleteProductFromCartTest() throws InterruptedException {
+    public void deleteProductFromCartTest() {
         productPage.waitForToastToDisappear();
         List<WebElement> productsList = cartPage.getProductsRows();
         productRow = productsList.getFirst();
-        Thread.sleep(1000);
         cartPage.clickRemoveProductFromCart(productRow);
+        cartPage.waitForToastToAppear();
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
         Assert.assertEquals(cartPage.getSuccessToastMessage(), "Product deleted.");
         Assert.assertEquals(cartPage.getCartTotalPrice(), "$0.00");

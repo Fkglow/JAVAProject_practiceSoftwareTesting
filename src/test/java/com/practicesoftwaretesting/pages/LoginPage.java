@@ -26,6 +26,8 @@ public class LoginPage {
         this.driver = driver;
         new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.urlToBe("https://practicesoftwaretesting.com/auth/login"));
         PageFactory.initElements(driver, this);
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOf(emailInput));
     }
 
     public RegistrationPage clickRegisterAccountButton() {
