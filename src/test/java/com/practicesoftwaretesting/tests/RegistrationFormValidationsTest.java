@@ -5,9 +5,7 @@ import com.practicesoftwaretesting.pages.RegistrationPage;
 import com.practicesoftwaretesting.pages.TopMenuBar;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 import utils.Core;
 import utils.TestDataGenerator;
@@ -30,16 +28,16 @@ public class RegistrationFormValidationsTest extends Core {
         topMenuBar = new TopMenuBar(driver);
         dataGenerator = new TestDataGenerator();
         softlyAssert = new SoftAssert();
+        loginPage = topMenuBar.clickSignInButton();
+        regPage = loginPage.clickRegisterAccountButton();
     }
 
     @Test
     public void emptyRequiredFieldsValidationTest() {
-        loginPage = topMenuBar.clickSignInButton();
-        regPage = loginPage.clickRegisterAccountButton();
         regPage.clickRegisterButton();
         List<WebElement> errorsList = regPage.getValidationErrors();
-        Assert.assertEquals(errorsList.size(), 11);
         List<String> validationMessagesList = regPage.getValidationErrorMessages(errorsList);
+        Assert.assertEquals(errorsList.size(), 11);
         softlyAssert.assertEquals(validationMessagesList.get(0), "First name is required");
         softlyAssert.assertEquals(validationMessagesList.get(1), "fields.last-name.required");  //Probably issue on the page :)
         softlyAssert.assertEquals(validationMessagesList.get(2), "Date of Birth is required");
@@ -85,18 +83,17 @@ public class RegistrationFormValidationsTest extends Core {
         Assert.assertFalse(regPage.doesPasswordMatchThisRuleByIndex(3));
     }
 
-//    @Test
-//    public void correctPasswordDoesNotThrowValidationErrors() {
-//        String pass = dataGenerator.generateCorrectPassword();
-//        regPage.enterPassword(pass);
-//        Assert.assertTrue(regPage.getPasswordValidationMessages().isEmpty());
-//        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(0));
-//        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(1));
-//        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(2));
-//        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(3));
-//        softlyAssert.assertAll();
-//
-//    }
+    @Test
+    public void validPasswordDoesNotThrowValidationErrors() {
+        String pass = dataGenerator.generateCorrectPassword();
+        regPage.enterPassword(pass);
+        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(0));
+        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(1));
+        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(2));
+        softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(3));
+        softlyAssert.assertAll();
+
+    }
 
     @AfterClass
     public void tearDown() {
