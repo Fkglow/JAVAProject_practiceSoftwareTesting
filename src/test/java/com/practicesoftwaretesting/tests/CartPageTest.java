@@ -77,6 +77,7 @@ public class CartPageTest extends Core {
         productRow = productsList.getFirst();
         cartPage.clickRemoveProductFromCart(productRow);
         cartPage.waitForToastToAppear();
+        Assert.assertTrue(cartPage.getProductsRows().isEmpty());
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
         Assert.assertEquals(cartPage.getSuccessToastMessage(), "Product deleted.");
         Assert.assertEquals(cartPage.getCartTotalPrice(), "$0.00");
