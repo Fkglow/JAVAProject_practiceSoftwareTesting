@@ -63,6 +63,7 @@ public class CartPageTest extends Core {
 
         cartPage.waitForToastToAppear();
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
+        Assert.assertEquals(cartPage.getSuccessToastMessage(), "Product quantity updated.");
         Assert.assertEquals(topMenuBar.getCartQuantity(), String.valueOf(quantity));
         String totalPriceValue = cartPage.getCartTotalPrice();
         String expectedTotalPrice = String.format(Locale.US,"%.2f", totalPrice);
