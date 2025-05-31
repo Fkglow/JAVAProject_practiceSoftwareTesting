@@ -1,5 +1,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="PracticeSoftwareTesting" verbose="1" >
+    <listeners>
+        <listener class-name="utils.ListenerTest"></listener>
+    </listeners>
 
     <test name="Sorting Test" preserve-order="true" enabled="true">
         <classes>

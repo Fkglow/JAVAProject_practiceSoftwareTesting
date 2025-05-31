@@ -23,8 +23,8 @@ public class RegistrationFormValidationsTest extends Core {
     @BeforeClass
     public void setUp() {
         driver = setDriver("chrome");
-        driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
+        driver.get("https://practicesoftwaretesting.com/");
         topMenuBar = new TopMenuBar(driver);
         dataGenerator = new TestDataGenerator();
         softlyAssert = new SoftAssert();
@@ -92,7 +92,6 @@ public class RegistrationFormValidationsTest extends Core {
         softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(2));
         softlyAssert.assertTrue(regPage.doesPasswordMatchThisRuleByIndex(3));
         softlyAssert.assertAll();
-
     }
 
     @AfterClass
