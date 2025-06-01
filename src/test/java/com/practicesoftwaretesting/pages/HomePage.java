@@ -33,6 +33,7 @@ public class HomePage {
     @FindBy(css = "button[type='submit']")
     private WebElement searchButton;
     private By categoryFilterCheckboxLabel = By.cssSelector(".checkbox label");
+    private By firstCategoryPanel = By.cssSelector("fieldset > div:first-of-type");
     // PRODUCTS
     private By productsListContainer = By.cssSelector("div .container");
     private By productsListLocator = By.cssSelector(".col-md-9");
@@ -46,8 +47,8 @@ public class HomePage {
         this.driver = driver;
         this.move = new Actions(driver);
         PageFactory.initElements(driver, this);
-        waitForProductsListToLoad();
-        waitForProductsListToLoad();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(firstCategoryPanel));
     }
 
     public void selectSortOptionByIndex(int index) {
