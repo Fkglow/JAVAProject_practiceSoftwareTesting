@@ -8,8 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import utils.Core;
 
-import java.util.List;
-
 public class ProductPageTest extends Core {
 
     public HomePage homePage;
@@ -28,6 +26,7 @@ public class ProductPageTest extends Core {
     @Test
     public void productPropertiesTest() {
         WebElement product = homePage.getProductsList().getFirst();
+        homePage.waitForProductImageToLoad(product);
         String productName = homePage.getProductName(product);
         double productPrice = homePage.getProductPrice(product);
         productPage = homePage.goToProduct(product);
@@ -40,6 +39,7 @@ public class ProductPageTest extends Core {
     @Test
     public void productCanBeAddedToCartTest() {
         WebElement product = homePage.getProductsList().getFirst();
+        homePage.waitForProductImageToLoad(product);
         productPage = homePage.goToProduct(product);
         productPage.clickAddToCartButton();
         Assert.assertTrue(productPage.isSuccessToastDisplayed());
@@ -52,6 +52,7 @@ public class ProductPageTest extends Core {
     @Test
     public void quantityOfProductCanBeUpdated() {
         WebElement product = homePage.getProductsList().getFirst();
+        homePage.waitForProductImageToLoad(product);
         productPage = homePage.goToProduct(product);
         productPage.clickIncreaseQuantityButton();
         productPage.clickIncreaseQuantityButton();

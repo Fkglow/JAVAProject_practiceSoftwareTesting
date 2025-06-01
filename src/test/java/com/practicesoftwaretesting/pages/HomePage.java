@@ -1,9 +1,6 @@
 package com.practicesoftwaretesting.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -50,7 +47,7 @@ public class HomePage {
         this.move = new Actions(driver);
         PageFactory.initElements(driver, this);
         waitForProductsListToLoad();
-        waitForAllProductsToLoad();
+        waitForProductsListToLoad();
     }
 
     public void selectSortOptionByIndex(int index) {
@@ -114,15 +111,15 @@ public class HomePage {
     }
 
     public List<WebElement> getProductsList() {
-        WebElement productsList = new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(productsListLocator));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement productsList = wait.until(ExpectedConditions.visibilityOfElementLocated(productsListLocator));
         return productsList.findElements(product);
     }
 
     public void waitForProductImageToLoad(WebElement product) {
-        WebElement img = product.findElement(By.tagName("img"));
-        String src = img.getAttribute("src");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement img = wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(product, By.tagName("img")));
+        String src = img.getAttribute("src");
         wait.until(driver -> {
             return src != null && !src.isEmpty();
         });
@@ -143,8 +140,12 @@ public class HomePage {
     public void waitForTableNamesToReload(List<String> oldListNames) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(d -> {
-            List<String> newListNames = getProductsNamesFromTheList();
-            return !newListNames.equals(oldListNames);
+            try {
+                List<String> newListNames = getProductsNamesFromTheList();
+                return !newListNames.equals(oldListNames);
+            } catch (StaleElementReferenceException e) {
+                return false;
+            }
         });
     }
 

@@ -31,6 +31,7 @@ public class CartPageTest extends Core {
         homePage = new HomePage(driver);
         topMenuBar = new TopMenuBar(driver);
         WebElement product = homePage.getProductsList().getFirst();
+        homePage.waitForProductImageToLoad(product);
         productPage = homePage.goToProduct(product);
 
         PRODUCT_NAME = productPage.getProductName();
