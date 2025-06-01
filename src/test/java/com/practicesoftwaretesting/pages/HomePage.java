@@ -97,13 +97,6 @@ public class HomePage {
         System.out.println("Label not found" + labelText);
     }
 
-    public void performActionAndWaitForStaleness(Runnable action) {
-        WebElement product = getProductsList().getFirst();
-        action.run();
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.stalenessOf(product));
-    }
-
     public void waitForAllProductsToLoad() {
         List<WebElement> products = getProductsList();
         for (WebElement product : products) {
@@ -121,15 +114,7 @@ public class HomePage {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement img = wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(product, By.tagName("img")));
         String src = img.getAttribute("src");
-        wait.until(driver -> {
-            return src != null && !src.isEmpty();
-        });
-    }
-
-    public void waitForProductsListToLoad() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(d -> { return getProductsList().size() > 1; });
-
+        wait.until(driver -> src != null && !src.isEmpty());
     }
 
     public ProductPage goToProduct(WebElement product) {
