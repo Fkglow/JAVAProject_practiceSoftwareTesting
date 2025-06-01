@@ -26,17 +26,20 @@ public class CartPageTest extends Core {
     @BeforeMethod
     public void setUp() {
         driver = setDriver("chrome");
-        driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
+        driver.get("https://practicesoftwaretesting.com/");
         homePage = new HomePage(driver);
         topMenuBar = new TopMenuBar(driver);
         WebElement product = homePage.getProductsList().getFirst();
+        homePage.waitForProductImageToLoad(product);
         productPage = homePage.goToProduct(product);
 
         PRODUCT_NAME = productPage.getProductName();
         PRODUCT_PRICE = productPage.getProductPrice();
 
         productPage.clickAddToCartButton();
+        productPage.waitForToastToAppear();
+        productPage.waitForToastToDisappear();
         topMenuBar.waitForCartIconToAppear();
         cartPage = topMenuBar.clickCartButton();
     }
@@ -54,7 +57,6 @@ public class CartPageTest extends Core {
 
     @Test
     public void productQuantityIncreaseTest() {
-        productPage.waitForToastToDisappear();
         List<WebElement> productsList = cartPage.getProductsRows();
         productRow = productsList.getFirst();
         int quantity = new Random().nextInt(10) + 1;
@@ -64,22 +66,23 @@ public class CartPageTest extends Core {
         cartPage.waitForToastToAppear();
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
         Assert.assertEquals(cartPage.getSuccessToastMessage(), "Product quantity updated.");
-        Assert.assertEquals(topMenuBar.getCartQuantity(), String.valueOf(quantity));
+        cartPage.waitForToastToDisappear();
         String totalPriceValue = cartPage.getCartTotalPrice();
         String expectedTotalPrice = String.format(Locale.US,"%.2f", totalPrice);
         Assert.assertEquals(totalPriceValue, "$"+expectedTotalPrice);
+        Assert.assertEquals(topMenuBar.getCartQuantity(), String.valueOf(quantity));
     }
 
     @Test
     public void deleteProductFromCartTest() {
-        productPage.waitForToastToDisappear();
         List<WebElement> productsList = cartPage.getProductsRows();
         productRow = productsList.getFirst();
         cartPage.clickRemoveProductFromCart(productRow);
         cartPage.waitForToastToAppear();
-        Assert.assertTrue(cartPage.getProductsRows().isEmpty());
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
         Assert.assertEquals(cartPage.getSuccessToastMessage(), "Product deleted.");
+        cartPage.waitForToastToDisappear();
+        Assert.assertTrue(cartPage.getProductsRows().isEmpty());
         Assert.assertEquals(cartPage.getCartTotalPrice(), "$0.00");
     }
 

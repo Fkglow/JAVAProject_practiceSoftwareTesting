@@ -25,9 +25,10 @@ public class FilterProductsByCategoryTest extends Core {
     @BeforeClass
     public void setUp() {
         driver = setDriver("chrome");
-        driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
+        driver.get("https://practicesoftwaretesting.com/");
         homePage = new HomePage(driver);
+        homePage.waitForAllProductsToLoad();
     }
 
     @Test
@@ -37,14 +38,20 @@ public class FilterProductsByCategoryTest extends Core {
             csvReader.readNext();
             String[] record;
             while ( (record = csvReader.readNext()) != null ) {
+                List<String> initialProducts = homePage.getProductsNamesFromTheList();
                 homePage.selectCategoryCheckboxFilterByLabel(record[0]);
                 homePage.waitForFilteringToComplete();
-                List<WebElement> productsList = homePage.getProductsList();
-                List<String> productsLabelsList = homePage.getProductsNamesFromTheList(productsList);
+                homePage.waitForTableNamesToReload(initialProducts);
+                homePage.waitForAllProductsToLoad();
+                List<String> productsLabelsList = homePage.getProductsNamesFromTheList();
                 List<String> expectedProducts = Arrays.asList(record[1].split(","));
                 try {
                     Assert.assertEquals(productsLabelsList, expectedProducts);
+                    List<String> initialProducts2 = homePage.getProductsNamesFromTheList();
                     homePage.selectCategoryCheckboxFilterByLabel(record[0]);
+                    homePage.waitForFilteringToComplete();
+                    homePage.waitForTableNamesToReload(initialProducts2);
+                    homePage.waitForAllProductsToLoad();
                 } catch (AssertionError ex) {
                     Reporter.log(ex.getMessage(), true);
                     throw ex;

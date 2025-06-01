@@ -1,9 +1,6 @@
 package com.practicesoftwaretesting.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -36,23 +33,22 @@ public class HomePage {
     @FindBy(css = "button[type='submit']")
     private WebElement searchButton;
     private By categoryFilterCheckboxLabel = By.cssSelector(".checkbox label");
+    private By firstCategoryPanel = By.cssSelector("fieldset > div:first-of-type");
     // PRODUCTS
-    @FindBy(css = "div .container")
-    private WebElement productsListContainer;
+    private By productsListContainer = By.cssSelector("div .container");
     private By productsListLocator = By.cssSelector(".col-md-9");
     private By product = By.cssSelector(".card");
     private By productName = By.cssSelector(".card-title");
     private By productPrice = By.cssSelector("[data-test='product-price']");
-    @FindBy(css = "[data-test='search-caption']")
-    private WebElement searchCaption;
+    private By searchCaption = By.cssSelector("[data-test='search-caption']");
     private By paginationList = By.cssSelector(".pagination");
 
     public HomePage(WebDriver driver) {
         this.driver = driver;
         this.move = new Actions(driver);
         PageFactory.initElements(driver, this);
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOf(productsListContainer));
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(firstCategoryPanel));
     }
 
     public void selectSortOptionByIndex(int index) {
@@ -69,7 +65,7 @@ public class HomePage {
     }
 
     public void changeMaxPrice() {
-        move.clickAndHold(priceRangeSliderMaxPointer).moveByOffset(-50, 0).release().perform();
+        move.clickAndHold(priceRangeSliderMaxPointer).moveByOffset(-100, 0).release().perform();
     }
 
     public int getMaxPriceFromPriceRange() {
@@ -91,15 +87,34 @@ public class HomePage {
             if (label.getText().trim().equalsIgnoreCase(labelText.trim())) {
                 WebElement checkbox = label.findElement(By.tagName("input"));
                 checkbox.click();
-                return;
+                if (checkbox.isSelected()) {
+                    return;
+                } else {
+                    System.out.println("Checkbox was not selected");
+                }
             }
         }
         System.out.println("Label not found" + labelText);
     }
 
+    public void waitForAllProductsToLoad() {
+        List<WebElement> products = getProductsList();
+        for (WebElement product : products) {
+            waitForProductImageToLoad(product);
+        }
+    }
+
     public List<WebElement> getProductsList() {
-        WebElement productsList = driver.findElement(productsListLocator);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement productsList = wait.until(ExpectedConditions.visibilityOfElementLocated(productsListLocator));
         return productsList.findElements(product);
+    }
+
+    public void waitForProductImageToLoad(WebElement product) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement img = wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(product, By.tagName("img")));
+        String src = img.getAttribute("src");
+        wait.until(driver -> src != null && !src.isEmpty());
     }
 
     public ProductPage goToProduct(WebElement product) {
@@ -108,35 +123,39 @@ public class HomePage {
         return new ProductPage(driver);
     }
 
-    public void waitForTableToReload() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public void waitForTableNamesToReload(List<String> oldListNames) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(d -> {
+            try {
+                List<String> newListNames = getProductsNamesFromTheList();
+                return !newListNames.equals(oldListNames);
+            } catch (StaleElementReferenceException e) {
+                return false;
+            }
+        });
     }
 
     public void waitForSortingToComplete() {
-        new WebDriverWait(driver, Duration.ofSeconds(5))
+        new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.attributeContains(productsListContainer, "data-test", "sorting_completed"));
     }
 
     public void waitForSearchingProductToComplete() {
-        new WebDriverWait(driver, Duration.ofSeconds(5))
+        new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.attributeContains(productsListContainer, "data-test", "search_completed"));
     }
 
     public void waitForFilteringToComplete() {
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.attributeContains(productsListContainer, "data-test", "filter_completed"));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.attributeContains(productsListContainer, "data-test", "filter_completed"));
     }
 
-    public List<String> getProductsNamesFromTheList(List<WebElement> products) {
-        return products.stream().map(this::getProductName).toList();
+    public List<String> getProductsNamesFromTheList() {
+        return getProductsList().stream().map(this::getProductName).toList();
     }
 
-    public List<Double> getProductsPricesFromTheList(List<WebElement> products) {
-        return products.stream().map(this::getProductPrice).toList();
+    public List<Double> getProductsPricesFromTheList() {
+        return getProductsList().stream().map(this::getProductPrice).toList();
     }
 
     public String getProductName(WebElement product) {
@@ -148,14 +167,14 @@ public class HomePage {
             List<WebElement> totalPages = getPagesButtons();
             List<String> allNames = new ArrayList<>();
             for (int i = 1; i <= totalPages.size()-1; i++) {
+                WebElement initialProduct = getProductsList().getFirst();
                 totalPages.get(i).click();
-                waitForTableToReload();
-                List<WebElement> productsOnPage = getProductsList();
-                allNames.addAll(getProductsNamesFromTheList(productsOnPage));
+                new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.stalenessOf(initialProduct));
+                allNames.addAll(getProductsNamesFromTheList());
             }
             return allNames;
         } else {
-            return getProductsNamesFromTheList(getProductsList());
+            return getProductsNamesFromTheList();
         }
     }
 
@@ -171,19 +190,19 @@ public class HomePage {
             List<WebElement> totalPages = getPagesButtons();
             List<Double> allPrices = new ArrayList<>();
             for (int i = 1; i <= totalPages.size()-1; i++) {
+                WebElement initialProduct = getProductsList().getFirst();
                 totalPages.get(i).click();
-                waitForTableToReload();
-                List<WebElement> productsOnPage = getProductsList();
-                allPrices.addAll(getProductsPricesFromTheList(productsOnPage));
+                new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.stalenessOf(initialProduct));
+                allPrices.addAll(getProductsPricesFromTheList());
             }
             return allPrices;
         } else {
-            return getProductsPricesFromTheList(getProductsList());
+            return getProductsPricesFromTheList();
         }
     }
 
     public String getSearchCaptionText() {
-        return new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOf(searchCaption)).getText();
+        return new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(searchCaption)).getText();
     }
 
     private boolean isPaginationDisplayed() {

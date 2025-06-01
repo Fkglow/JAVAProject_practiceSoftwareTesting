@@ -40,6 +40,11 @@
             <artifactId>opencsv</artifactId>
             <version>5.11</version>
         </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.ashot</groupId>
+            <artifactId>ashot</artifactId>
+            <version>1.5.4</version>
+        </dependency>
     </dependencies>
 
     <build>

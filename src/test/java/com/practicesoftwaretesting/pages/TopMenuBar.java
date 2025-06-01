@@ -54,7 +54,8 @@ public class TopMenuBar {
     }
 
     public CartPage clickCartButton() {
-        driver.findElement(cartButton).click();
+        WebElement cartIcon = new WebDriverWait(driver, Duration.ofSeconds(2)).until(ExpectedConditions.elementToBeClickable(cartButton));
+        cartIcon.click();
         return new CartPage(driver);
     }
 
