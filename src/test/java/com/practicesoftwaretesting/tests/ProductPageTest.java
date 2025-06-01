@@ -19,16 +19,15 @@ public class ProductPageTest extends Core {
     @BeforeMethod
     public void setUp() {
         driver = setDriver("chrome");
-        driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
+        driver.get("https://practicesoftwaretesting.com/");
         homePage = new HomePage(driver);
         topMenuBar = new TopMenuBar(driver);
     }
 
     @Test
     public void productPropertiesTest() {
-        List<WebElement> productsList = homePage.getProductsList();
-        WebElement product = productsList.getFirst();
+        WebElement product = homePage.getProductsList().getFirst();
         String productName = homePage.getProductName(product);
         double productPrice = homePage.getProductPrice(product);
         productPage = homePage.goToProduct(product);
@@ -40,8 +39,7 @@ public class ProductPageTest extends Core {
 
     @Test
     public void productCanBeAddedToCartTest() {
-        List<WebElement> productsList = homePage.getProductsList();
-        WebElement product = productsList.getFirst();
+        WebElement product = homePage.getProductsList().getFirst();
         productPage = homePage.goToProduct(product);
         productPage.clickAddToCartButton();
         Assert.assertTrue(productPage.isSuccessToastDisplayed());
@@ -53,8 +51,7 @@ public class ProductPageTest extends Core {
 
     @Test
     public void quantityOfProductCanBeUpdated() {
-        List<WebElement> productsList = homePage.getProductsList();
-        WebElement product = productsList.getFirst();
+        WebElement product = homePage.getProductsList().getFirst();
         productPage = homePage.goToProduct(product);
         productPage.clickIncreaseQuantityButton();
         productPage.clickIncreaseQuantityButton();

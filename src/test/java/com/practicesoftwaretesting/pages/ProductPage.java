@@ -24,7 +24,7 @@ public class ProductPage extends BasePage{
 
     public ProductPage(WebDriver driver) {
         super(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(5))
+        new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.urlContains("https://practicesoftwaretesting.com/product/"));
         PageFactory.initElements(driver, this);
         new WebDriverWait(driver, Duration.ofSeconds(5))

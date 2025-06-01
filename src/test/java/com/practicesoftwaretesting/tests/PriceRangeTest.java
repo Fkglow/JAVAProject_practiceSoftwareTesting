@@ -14,15 +14,16 @@ public class PriceRangeTest extends Core {
     @BeforeMethod
     public void setUp() {
         driver = setDriver("chrome");
-        driver.get("https://practicesoftwaretesting.com/");
         driver.manage().window().maximize();
+        driver.get("https://practicesoftwaretesting.com/");
         homePage = new HomePage(driver);
     }
 
     @Test
     public void productsPricesShouldReflectPriceRangeAfterMinPriceUpdate() {
+        List<String> initialProducts = homePage.getProductsNamesFromTheList();
         homePage.changeMinPrice();
-        homePage.waitForTableToReload();
+        homePage.waitForTableNamesToReload(initialProducts);
         int minPrice = homePage.getMinPriceFromPriceRange();
         int maxPrice = homePage.getMaxPriceFromPriceRange();
 
@@ -35,8 +36,9 @@ public class PriceRangeTest extends Core {
 
     @Test
     public void productsPricesShouldReflectPriceRangeAfterMaxPriceUpdate() {
+        List<String> initialProducts = homePage.getProductsNamesFromTheList();
         homePage.changeMaxPrice();
-        homePage.waitForTableToReload();
+        homePage.waitForTableNamesToReload(initialProducts);
         int minPrice = homePage.getMinPriceFromPriceRange();
         int maxPrice = homePage.getMaxPriceFromPriceRange();
 
