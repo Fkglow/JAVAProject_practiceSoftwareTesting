@@ -22,8 +22,7 @@ public class BasePage {
     public void waitForToastToDisappear() {
         // Making sure not hovering over toast, as it would not disappear
         WebElement logo = driver.findElement(pageLogo);
-        Actions actions = new Actions(driver);
-        actions.moveToElement(logo).perform();
+        new Actions(driver).moveToElement(logo).perform();
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.invisibilityOfElementLocated(successToastMessage));
     }
 
