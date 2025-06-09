@@ -39,7 +39,7 @@ public class RegistrationFormValidationsTest extends Core {
         List<String> validationMessagesList = regPage.getValidationErrorMessages(errorsList);
         Assert.assertEquals(errorsList.size(), 11);
         softlyAssert.assertEquals(validationMessagesList.get(0), "First name is required");
-        softlyAssert.assertEquals(validationMessagesList.get(1), "fields.last-name.required");  //Probably issue on the page :)
+        softlyAssert.assertEquals(validationMessagesList.get(1), "Last name is required");
         softlyAssert.assertEquals(validationMessagesList.get(2), "Date of Birth is required");
         softlyAssert.assertEquals(validationMessagesList.get(3), "Street is required");
         softlyAssert.assertEquals(validationMessagesList.get(4), "Postcode is required");
