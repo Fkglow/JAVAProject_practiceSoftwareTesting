@@ -82,8 +82,7 @@ public class CartPageTest extends Core {
         Assert.assertTrue(cartPage.isSuccessToastDisplayed());
         Assert.assertEquals(cartPage.getSuccessToastMessage(), "Product deleted.");
         cartPage.waitForToastToDisappear();
-        Assert.assertTrue(cartPage.getProductsRows().isEmpty());
-        Assert.assertEquals(cartPage.getCartTotalPrice(), "$0.00");
+        Assert.assertEquals(cartPage.getEmptyCartMessage(), "The cart is empty. Nothing to display.");
     }
 
     @AfterMethod
