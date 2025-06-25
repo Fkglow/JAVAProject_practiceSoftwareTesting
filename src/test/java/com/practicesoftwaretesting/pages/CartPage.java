@@ -14,12 +14,11 @@ import java.util.List;
 
 public class CartPage extends BasePage{
 
-    private WebDriver driver;
-
     @FindBy(css = "tbody")
     private WebElement productsTable;
     @FindBy(css = "[data-test='cart-total']")
     private WebElement cartTotalPrice;
+    private By emptyCartMessage = By.cssSelector("app-cart p");
     // PRODUCT ROW
     private By productRow = By.cssSelector("tr.ng-star-inserted");
     private By productName = By.cssSelector(".product-title");
@@ -37,6 +36,11 @@ public class CartPage extends BasePage{
 
     public List<WebElement> getProductsRows() {
         return productsTable.findElements(productRow);
+    }
+
+    public String getEmptyCartMessage() {
+        WebElement message = driver.findElement(emptyCartMessage);
+        return message.getText();
     }
 
     public String getProductName(WebElement productRow) {

@@ -11,7 +11,7 @@ import java.time.Duration;
 
 public class BasePage {
 
-    private WebDriver driver;
+    public WebDriver driver;
     private By successToastMessage = By.cssSelector(".toast-message");
     private By pageLogo = By.id("Layer_1");
 
